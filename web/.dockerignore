@@ -1,0 +1,8 @@
+./front/node_modules
+./front/npm-debug.log
+./controller/node_modules
+./controller/npm-debug.log
+Dockerfile
+.dockerignore
+.git
+.gitignore

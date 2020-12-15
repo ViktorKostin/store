@@ -1,0 +1,42 @@
+version: '3'
+services:
+  web:
+    build:
+      context: web
+      dockerfile: Dockerfile
+    image: 'store-web:1.0.0'
+    restart: always
+    environment:
+      - MONGO_HOSTNAME=db
+    volumes:
+      - ./images:/var/www/static/images
+    depends_on:
+      - db
+    networks:
+      - proxy-network
+      - db-network
+  db:
+    image: mongo:4.1.8-xenial
+    container_name: db
+    restart: unless-stopped
+    volumes:
+      - ./db:/data/db
+    networks:
+      - db-network
+  revproxy:
+    build:
+      context: nginx
+      dockerfile: Dockerfile
+    image: 'store-nginx:1.0.0'
+    volumes:
+      - ./images:/var/www/static/images
+    depends_on:
+      - web
+    networks:
+      - proxy-network
+    ports:
+      - '80:80'
+networks:
+  db-network:
+    driver: bridge
+  proxy-network:
